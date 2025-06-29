@@ -148,7 +148,6 @@ class LayerNorm(nn.Module):
         self.a_2 = nn.Parameter(torch.ones(features))
         self.b_2 = nn.Parameter(torch.zeros(features))
         self.eps = eps
-        
     def forward(self, x):
         # 在统计每个样本所有维度的值，求均值和方差
         mean = x.mean(-1, keepdim=True) # mean: [bsz, max_len, 1]
@@ -331,7 +330,8 @@ class Transformer(nn.Module):
         assert t <= self.args.block_size, f"不能计算该序列，该序列长度为 {t}, 最大序列长度只有 {self.args.block_size}"
 
         # 通过 self.transformer
-        # 首先将输入 idx 通过 Embedding 层，得到维度为 (batch size, sequence length, n_embd)
+        # 首先
+        # 将输入 idx 通过 Embedding 层，得到维度为 (batch size, sequence length, n_embd)
         print("idx", idx.size())
         # 通过 Embedding 层
         tok_emb = self.transformer.wte(idx)
