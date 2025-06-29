@@ -1,4 +1,44 @@
 import torch
+"""
+A Transformer implementation in PyTorch for sequence-to-sequence tasks.
+This implementation includes:
+- Full Transformer architecture with Encoder and Decoder
+- Multi-head attention mechanism
+- Position-wise feed-forward networks
+- Layer normalization
+- Positional encoding
+Classes:
+    ModelArgs: Configuration class for transformer model parameters
+    MultiHeadAttention: Implementation of multi-head attention mechanism
+    LayerNorm: Layer normalization implementation
+    MLP: Multi-layer perceptron for feed-forward network
+    EncoderLayer: Single layer of the transformer encoder
+    Encoder: Full transformer encoder with multiple layers
+    DecoderLayer: Single layer of the transformer decoder
+    Decoder: Full transformer decoder with multiple layers
+    PositionalEncoding: Positional encoding implementation
+    Transformer: Complete transformer model
+The implementation follows the architecture described in "Attention Is All You Need"
+(Vaswani et al., 2017).
+Example usage:
+    args = ModelArgs(n_embd=100, n_heads=10, dim=100, dropout=0.1,
+                    max_seq_len=512, vocab_size=1000, block_size=1000, n_layer=2)
+    model = Transformer(args)
+Parameters in ModelArgs:
+    n_embd (int): Embedding dimension
+    n_heads (int): Number of attention heads
+    dim (int): Model dimension
+    dropout (float): Dropout rate
+    max_seq_len (int): Maximum sequence length
+    vocab_size (int): Size of vocabulary
+    block_size (int): Maximum block size for processing
+    n_layer (int): Number of transformer layers
+Dependencies:
+    - torch
+    - math
+    - transformers (for BertTokenizer)
+    - dataclasses
+"""
 import math
 from torch import nn
 from dataclasses import dataclass
@@ -334,15 +374,17 @@ def main():
         truncation=True,
         padding='max_length'
     )
+    print('inputs_token', inputs_token)
+    print('inputs_token input_ids', inputs_token['input_ids'].shape)
     args.vocab_size = tokenizer.vocab_size
     transformer = Transformer(args)
     inputs_id = inputs_token['input_ids']
-    logits, loss = transformer.forward(inputs_id)
-    print(logits)
+    logits, loss = transformer.forward(inputs_id)   
+    print('logits', logits)
     predicted_ids = torch.argmax(logits, dim=-1).item()
     output = tokenizer.decode(predicted_ids)
-    print(output)
+    print('output', output)
 
-if __name__ == "__main__":
+if __name__ == "__main__":        
     print("开始")
     main()
