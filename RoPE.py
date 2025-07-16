@@ -32,13 +32,14 @@ class RoPE:
 
         # 拼接成 full dim（即把每一对用来旋转的维度对接好）
         emb = torch.cat((freqs, freqs), dim=-1)  #(2,4,8) 
+        print("emb:", emb)
+    
         cos = emb.cos()
         sin = emb.sin()
         # 应用旋转
         q_embed = (q * cos) + (self.rotate_half(q) * sin)
         k_embed = (k * cos) + (self.rotate_half(k) * sin)
         return q_embed, k_embed
-
 # 初始化参数
 batch = 2
 seq_len = 4
@@ -46,9 +47,7 @@ dim = 8
 q = torch.randn(batch, seq_len, dim)
 k = torch.randn(batch, seq_len, dim)
 position_ids = torch.arange(seq_len).unsqueeze(0).expand(batch, -1)  # [batch, seq_len]
-
 rope = RoPE(dim)
 q_rope, k_rope = rope.apply(q, k, position_ids)
-
 print("q_rope shape:", q_rope.shape)  # [2, 4, 8]
 print("k_rope shape:", k_rope.shape)
